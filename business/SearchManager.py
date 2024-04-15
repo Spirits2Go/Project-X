@@ -10,4 +10,4 @@ class SearchManager:
     def show_available_hotels(self, criteria):
         pass
 
-    #Hello :)
+    #Hey :)
