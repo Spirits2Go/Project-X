@@ -9,3 +9,5 @@ class SearchManager:
 
     def show_available_hotels(self, criteria):
         pass
+
+    #See if that works :)
