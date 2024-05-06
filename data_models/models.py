@@ -130,7 +130,7 @@ class Room(Base):
     description: Mapped[str] = mapped_column("description", nullable=True) # e.g. "Room with sea view"
     amenities: Mapped[str] = mapped_column("amenities", nullable=True)
     price: Mapped[float] = mapped_column("price")
-
+    bookings = relationship("Booking", back_populates="room")
     def __repr__(self) -> str:
         return f"Room(hotel={self.hotel!r}, room_number={self.number!r}, type={self.type!r}, description={self.description!r}, amenities={self.amenities!r}, price={self.price!r})"
 
@@ -144,13 +144,15 @@ class Booking(Base):
     id: Mapped[int] = mapped_column("id", primary_key=True)
     room_hotel_id: Mapped[int] = mapped_column("room_hotel_id")
     room_number: Mapped[str] = mapped_column("room_number")
-    room: Mapped["Room"] = relationship()
     guest_id: Mapped[int] = mapped_column("guest_id", ForeignKey("guest.id"))
     guest: Mapped["Guest"] = relationship(back_populates="bookings")
     number_of_guests: Mapped[int] = mapped_column("number_of_guests")
     start_date: Mapped[date] = mapped_column("start_date")
     end_date: Mapped[date] = mapped_column("end_date")
     comment: Mapped[str] = mapped_column("comment", nullable=True)
+
+    # Relationship to Room
+    room: Mapped["Room"] = relationship("Room", back_populates="bookings", foreign_keys=[room_hotel_id, room_number])
 
     __table_args__ = (
         ForeignKeyConstraint(
