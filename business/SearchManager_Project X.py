@@ -117,8 +117,7 @@ class UserInterface(object):
 
     def ask_for_number_of_guests(self):
         # First, retrieve all hotels
-        matching_hotels = self.search_manager.get_hotels_by_name(
-            '')  # Assuming this returns all hotels when an empty string is passed
+        matching_hotels = self.search_manager.get_hotels_by_name('')  # Assuming this returns all hotels when an empty string is passed
         guests = input("Enter the number of guests (press Enter to skip): ").strip()
         if guests:
             try:
@@ -137,7 +136,11 @@ class UserInterface(object):
             for hotel in matching_hotels:
                 print(f"Hotel: {hotel.name}, Location: {hotel.address.city}")
                 for room in hotel.rooms:
-                    print(f"    Room Number: {room.number}, Capacity: {room.max_guests}")
+                    if room.max_guests >= guests:  # Ensure only matching rooms are displayed
+                        print(f"    Room Number: {room.number}, Capacity: {room.max_guests}")
+
+
+
 
     def ask_for_maximum_price(self):
         try:
@@ -184,7 +187,7 @@ if __name__ == "__main__":
     interface = UserInterface(manager)
     #interface.ask_for_location()
     #interface.check_for_booking_date()
-    #interface.ask_for_number_of_guests()
+    interface.ask_for_number_of_guests()
     #interface.ask_for_maximum_price()
     #interface.ask_for_minimum_stars()
 

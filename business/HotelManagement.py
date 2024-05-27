@@ -104,7 +104,7 @@ if __name__ == '__main__':
     manager = HotelManager(database_path)
 
     # To add a new hotel
-    manager.add_new_hotel()
+    #manager.add_new_hotel()
 
     # To list all hotels
     manager.list_all_hotels_with_details()
