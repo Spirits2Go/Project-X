@@ -1,5 +1,10 @@
 import os
-
+from business.HotelManagement import HotelManager
+from business.ReservationManager import ReservationManager
+from business.UserManager import UserManager
+from ui.SearchUI import SearchUI
+from ui.ReservationUI import ReservationUI
+from ui.AdminUI import AdminUI
 
 class Console(object):
     def __init__(self):
@@ -14,7 +19,6 @@ class Console(object):
 
 
 class Application(object):
-
     def __init__(self, start: Console):
         self._current: Console = start
 
@@ -63,7 +67,7 @@ class Menu(Console):
         space = " " * (self._width - len(left) - len(self._title) - len(right))
         print(f"{left}{self._title}{space}{right}")
         print("#" * self._width)
-        for i, option in enumerate(self, 1):
+        for i, option in enumerate(self._options, 1):
             index = f"{i}: "
             space = " " * (self._width - len(left) - len(index) - len(option) - len(right))
             print(f"{left}{index}{option}{space}{right}")
@@ -85,3 +89,45 @@ class Menu(Console):
         self.clear()
         self._show()
         return self._navigate(self._make_choice())
+
+
+class MainMenu(Menu):
+    def __init__(self, db_file):
+        super().__init__("Main Menu")
+        self.hotel_manager = HotelManager(db_file)
+        self.reservation_manager = ReservationManager(db_file)
+        self.user_manager = UserManager(db_file)
+        self.search_ui = SearchUI(self.hotel_manager)
+        self.reservation_ui = ReservationUI(self.reservation_manager, self.user_manager)
+        self.admin_ui = AdminUI(self.hotel_manager, self.reservation_manager)
+        self.add_option(MenuOption("Search Hotels"))
+        self.add_option(MenuOption("Book a Room"))
+        self.add_option(MenuOption("User Management"))
+        self.add_option(MenuOption("Admin Management"))
+        self.add_option(MenuOption("Quit"))
+
+    def show_menu(self):
+        self._show()
+
+    def user_choice(self):
+        return self._make_choice()
+
+    def _navigate(self, choice: int) -> Console:
+        match choice:
+            case 1:
+                self.search_ui.show_search_menu()
+                return self
+            case 2:
+                self.reservation_ui.show_reservation_menu()
+                return self
+            case 3:
+                self.user_manager.show_user_menu()
+                return self
+            case 4:
+                self.admin_ui.show_admin_menu()
+                return self
+            case 5:
+                return None
+            case _:
+                print("Invalid choice, please select a valid option.")
+                return self

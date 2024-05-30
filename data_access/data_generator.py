@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 
 from data_models.models import *
 
-
 def generate_system_data(engine: Engine, verbose: bool = False) -> None:
     with Session(engine) as session:
         administrator = Role(name="administrator", access_level=sys.maxsize)
@@ -27,10 +26,8 @@ def generate_system_data(engine: Engine, verbose: bool = False) -> None:
             print("#" * 50)
             print(admin_login)
 
-
 def generate_hotels(engine: Engine, verbose: bool = False) -> None:
     with Session(engine) as session:
-
         hotels_to_add = [
             Hotel(
                 name="Hotel Amaris",
@@ -115,7 +112,7 @@ def generate_hotels(engine: Engine, verbose: bool = False) -> None:
                     print(f"{' ' * 5}{room}")
 
 
-def generate_guests(engine: Engine, verbose):
+def generate_guests(engine: Engine, verbose: bool):
     with Session(engine) as session:
         guests_to_add = [
             Guest(
@@ -160,7 +157,7 @@ def generate_guests(engine: Engine, verbose):
                 print(guest)
 
 
-def generate_registered_guests(engine: Engine, verbose):
+def generate_registered_guests(engine: Engine, verbose: bool):
     with Session(engine) as session:
         registered_guests_to_add = [
             RegisteredGuest(
@@ -288,7 +285,7 @@ def generate_random_registered_bookings(engine: Engine, k: int = 5, s: int = 1, 
         session.commit()
         if verbose:
             print("#" * 50)
-            print("Registred bookings added:", len(registered_bookings_to_add))
+            print("Registered bookings added:", len(registered_bookings_to_add))
             print("#" * 50)
             for booking in registered_bookings_to_add:
                 print(booking)

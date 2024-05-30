@@ -1,87 +1,91 @@
+import sys
+from pathlib import Path
 import os
+
+# Add the project root to sys.path
+project_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(project_root))
+
+from ui.SearchUI import SearchUI
+from ui.ReservationUI import ReservationUI
+from ui.AdminUI import AdminUI
 from business.UserManager import UserManager
 
-def main():
-    db_file = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'data', 'database.db'))
-    print(f"Database file path: {db_file}")
+class MainMenu:
+    def __init__(self, db_file):
+        self.user_manager = UserManager(db_file)
+        self.search_ui = SearchUI(db_file)
+        self.reservation_ui = ReservationUI(db_file, self.user_manager)
+        self.admin_ui = AdminUI(db_file, self.user_manager)
+        self.logged_in_user = None
 
-    if not os.path.exists(db_file):
-        print(f"Database file does not exist: {db_file}")
-        return
+    def show_menu(self):
+        while True:
+            self.clear()
+            print("Main Menu")
+            print("1. Search Hotels")
+            print("2. Book a Room")
+            print("3. Admin Management")
+            print("4. Create User")
+            print("5. Quit")
 
-    user_manager = UserManager(db_file)
-    user = None
-
-    while True:
-        print("\nWelcome to the Hotel Booking System")
-        print("1. Login")
-        print("2. View Booking History")
-        print("3. Create Booking")
-        print("4. Update Booking")
-        print("5. Delete Booking")
-        print("6. Exit")
-        choice = input("Please select an option: ").strip()
-
-        if choice.isdigit():
-            choice = int(choice)
-        else:
-            print("Invalid choice. Please enter a number.")
-            continue
-
-        if choice == 1:
-            username = input("Enter username: ").strip()
-            password = input("Enter password: ").strip()
-            user = user_manager.login(username, password)
-            if user:
-                print("Login successful")
-            else:
-                print("Invalid username or password")
-        elif choice == 2:
-            if user:
-                bookings = user_manager.get_booking_history(user.id)
-                if bookings:
-                    print("Booking History:")
-                    for booking in bookings:
-                        print(booking)
+            choice = input("Enter Option (1-5): ")
+            if choice == "1":
+                self.search_ui.show_search_menu()
+            elif choice == "2":
+                self.reservation_ui.show_reservation_menu()
+            elif choice == "3":
+                if self.login():
+                    role = self.user_manager.get_user_role(self.logged_in_user)
+                    if role == 'administrator':
+                        self.admin_ui.show_admin_menu()
+                    else:
+                        print("Access denied. You must be an admin to access this menu.")
+                        input("Press Enter to continue...")
                 else:
-                    print("No booking history found.")
+                    print("Invalid credentials. Please try again.")
+                    input("Press Enter to continue...")
+            elif choice == "4":
+                self.create_user()
+            elif choice == "5":
+                break
             else:
-                print("Please login first.")
-        elif choice == 3:
-            if user:
-                room_id = int(input("Enter room ID: ").strip())
-                start_date = input("Enter start date (YYYY-MM-DD): ").strip()
-                end_date = input("Enter end date (YYYY-MM-DD): ").strip()
-                number_of_guests = int(input("Enter number of guests: ").strip())
-                comment = input("Enter comment: ").strip()
-                user_manager.create_booking(user.id, room_id, start_date, end_date, number_of_guests, comment)
-                print("Booking created successfully.")
-            else:
-                print("Please login first.")
-        elif choice == 4:
-            if user:
-                booking_id = int(input("Enter booking ID to update: ").strip())
-                room_id = int(input("Enter new room ID: ").strip())
-                start_date = input("Enter new start date (YYYY-MM-DD): ").strip()
-                end_date = input("Enter new end date (YYYY-MM-DD): ").strip()
-                number_of_guests = int(input("Enter new number of guests: ").strip())
-                comment = input("Enter new comment: ").strip()
-                user_manager.update_booking(booking_id, room_id, start_date, end_date, number_of_guests, comment)
-                print("Booking updated successfully.")
-            else:
-                print("Please login first.")
-        elif choice == 5:
-            if user:
-                booking_id = int(input("Enter booking ID to delete: ").strip())
-                user_manager.delete_booking(booking_id)
-                print("Booking deleted successfully.")
-            else:
-                print("Please login first.")
-        elif choice == 6:
-            print("Exiting...")
-            break
+                print("Invalid choice, please select a valid option.")
+                input("Press Enter to continue...")
+
+    def login(self):
+        username = input("Enter username: ")
+        password = input("Enter password: ")
+        user = self.user_manager.login(username, password)
+        if user:
+            print("Login successful")
+            self.logged_in_user = user
+            return True
         else:
-            print("Invalid choice. Please try again.")
+            print("Login failed")
+            return False
+
+    def create_user(self):
+        role_mapping = {
+            "user": "registered_user",
+            "admin": "administrator"
+        }
+        print("Available roles: user, admin")
+        role_input = input("Enter your role: ").strip().lower() or 'user'
+        role = role_mapping.get(role_input, 'registered_user')
+        username = input("Enter new username: ")
+        password = input("Enter new password: ")
+        new_user = self.user_manager.create_user(username, password, role)
+        if new_user:
+            print(f"User created: {new_user.username}")
+        else:
+            print("Failed to create user. Please ensure the role exists.")
+
+    @staticmethod
+    def clear():
+        os.system('cls' if os.name == 'nt' else 'clear')
+
 
 if __name__ == "__main__":
-    main()
+    current_ui = MainMenu("../data/database.db")
+    current_ui.show_menu()

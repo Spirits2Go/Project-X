@@ -10,6 +10,27 @@ from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import ForeignKey, String, Integer
+
+class Base(DeclarativeBase):
+    pass
+
+class Role(Base):
+    __tablename__ = 'roles'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String, unique=True)
+    access_level: Mapped[int] = mapped_column(Integer)
+
+class Login(Base):
+    __tablename__ = 'logins'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String, unique=True)
+    password: Mapped[str] = mapped_column(String)
+    role_id: Mapped[int] = mapped_column(ForeignKey('roles.id'))
+    role: Mapped[Role] = relationship("Role", back_populates="logins")
+
+Role.logins = relationship("Login", order_by=Login.id, back_populates="role")
 
 class Base(DeclarativeBase):
     '''
