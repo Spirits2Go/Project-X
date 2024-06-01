@@ -16,6 +16,12 @@ class UserManager:
             return user
         return None
 
+    def logout(self):
+        self.current_user = None  # Reset current user to None to represent logout
+
+    def is_logged_in(self):
+        return self.current_user is not None
+
     def get_user_role(self, user):
         return user.role.name if user and user.role else None
 

@@ -1,0 +1,26 @@
+Booking ID: 32
+Hotel: Serhan
+Address: Clarastrasse 31, Basel, 4001
+Room Number: 1
+Room Type: single
+Room Description: Nothing special, just really affordable.
+Room Amenities: cigarettes
+Price per Night: 8.6
+Start Date: 2023-12-04
+End Date: 2023-12-05
+Guests: 1
+Comment: Happy Birthday
+
+Booking ID: 33
+Hotel: Serhan
+Address: Clarastrasse 31, Basel, 4001
+Room Number: 1
+Room Type: single
+Room Description: Nothing special, just really affordable.
+Room Amenities: cigarettes
+Price per Night: 8.6
+Start Date: 2001-12-04
+End Date: 2001-12-05
+Guests: 1
+Comment: 
+

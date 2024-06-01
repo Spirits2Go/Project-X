@@ -5,7 +5,6 @@ from pathlib import Path
 from data_access.data_base import init_db
 from data_models.models import *
 from business.UserManager import UserManager
-from datetime import datetime
 
 class AdminUI:
     def __init__(self, database_file, user_manager):
@@ -28,10 +27,12 @@ class AdminUI:
             print("2. List All Hotels with Details")
             print("3. Find Hotel by Name")
             print("4. Update Hotel Information")
-            print("5. Update Hotel Bookings")
-            print("6. Back to Main Menu")
+            print("5. Update Room Availability")
+            print("6. Update Room Prices")
+            print("7. Update User Bookings")
+            print("8. Back to Main Menu")
 
-            choice = input("Enter Option (1-6): ")
+            choice = input("Enter Option (1-8): ")
             if choice == "1":
                 self.add_new_hotel()
             elif choice == "2":
@@ -41,8 +42,12 @@ class AdminUI:
             elif choice == "4":
                 self.update_hotel_information()
             elif choice == "5":
-                self.update_hotel_bookings()
+                self.update_room_availability()
             elif choice == "6":
+                self.update_room_prices()
+            elif choice == "7":
+                self.update_user_bookings()
+            elif choice == "8":
                 break
             else:
                 print("Invalid choice, please select a valid option.")
@@ -79,7 +84,8 @@ class AdminUI:
                 max_guests=max_guests,
                 description=description,
                 amenities=amenities,
-                price=price
+                price=price,
+                is_available=True  # Default to available
             )
             new_hotel.rooms.append(room)
 
@@ -103,7 +109,7 @@ class AdminUI:
             for hotel in hotels:
                 print(f"\nHotel Name: {hotel.name}, Stars: {hotel.stars}, Address: {hotel.address}")
                 for room in hotel.rooms:
-                    print(f"Room Number: {room.number}, Type: {room.type}, Price: {room.price}")
+                    print(f"Room Number: {room.number}, Type: {room.type}, Price: {room.price}, Availability: {room.is_available}")
                     if room.bookings:
                         for booking in room.bookings:
                             print(f"Booking ID: {booking.id}, Guest ID: {booking.guest_id}, Start Date: {booking.start_date}, End Date: {booking.end_date}")
@@ -122,40 +128,80 @@ class AdminUI:
         if hotel:
             print(f"Found Hotel - Name: {hotel.name}, Stars: {hotel.stars}, Address: {hotel.address.city}")
             for room in hotel.rooms:
-                print(f"Room Number: {room.number}, Type: {room.type}, Price: {room.price}")
+                print(f"Room Number: {room.number}, Type: {room.type}, Price: {room.price}, Availability: {room.is_available}")
         else:
             print("Hotel not found.")
 
     def update_hotel_information(self):
         name = input("Enter the hotel name to update: ")
         hotel = self.__session.execute(
-            select(Hotel)
-            .where(Hotel.name == name)
-            .options(joinedload(Hotel.address))
+            select(Hotel).where(Hotel.name == name).options(joinedload(Hotel.address))
         ).scalar()
+
         if not hotel:
             print("Hotel not found.")
             return
 
-        print("Leave fields blank to keep current values.")
+        print(f"Updating information for hotel: {hotel.name}")
         new_name = input(f"Enter new name (current: {hotel.name}): ") or hotel.name
         new_stars = input(f"Enter new star rating (current: {hotel.stars}): ")
         new_stars = int(new_stars) if new_stars else hotel.stars
-        new_street = input(f"Enter new street (current: {hotel.address.street}): ") or hotel.address.street
-        new_zip = input(f"Enter new ZIP code (current: {hotel.address.zip}): ") or hotel.address.zip
-        new_city = input(f"Enter new city (current: {hotel.address.city}): ") or hotel.address.city
+
+        address = hotel.address
+        new_street = input(f"Enter new street (current: {address.street}): ") or address.street
+        new_zip = input(f"Enter new ZIP code (current: {address.zip}): ") or address.zip
+        new_city = input(f"Enter new city (current: {address.city}): ") or address.city
 
         hotel.name = new_name
         hotel.stars = new_stars
-        hotel.address.street = new_street
-        hotel.address.zip = new_zip
-        hotel.address.city = new_city
+        address.street = new_street
+        address.zip = new_zip
+        address.city = new_city
 
         self.__session.commit()
-        print(f"Updated hotel: {hotel.name}")
+        print("Hotel information updated successfully.")
 
-    def update_hotel_bookings(self):
-        hotel_name = input("Enter the hotel name to update bookings for: ")
+    def update_room_availability(self):
+        hotel_name = input("Enter the hotel name: ")
+        hotel = self.__session.execute(
+            select(Hotel).where(Hotel.name == hotel_name).options(joinedload(Hotel.rooms))
+        ).scalar()
+
+        if not hotel:
+            print("Hotel not found.")
+            return
+
+        print(f"Updating room availability for hotel: {hotel.name}")
+        for room in hotel.rooms:
+            print(f"Room Number: {room.number}, Type: {room.type}, Current Availability: {room.is_available}")
+            is_available = input(f"Is room {room.number} available? (yes/no): ").strip().lower() == 'yes'
+            room.is_available = is_available
+
+        self.__session.commit()
+        print("Room availability updated successfully.")
+
+    def update_room_prices(self):
+        hotel_name = input("Enter the hotel name: ")
+        hotel = self.__session.execute(
+            select(Hotel).where(Hotel.name == hotel_name).options(joinedload(Hotel.rooms))
+        ).scalar()
+
+        if not hotel:
+            print("Hotel not found.")
+            return
+
+        print(f"Updating room prices for hotel: {hotel.name}")
+        for room in hotel.rooms:
+            print(f"Room Number: {room.number}, Type: {room.type}, Current Price: {room.price}")
+            new_price = input(f"Enter new price for room {room.number} (current: {room.price}): ")
+            if new_price:
+                room.price = float(new_price)
+
+        self.__session.commit()
+        print("Room prices updated successfully.")
+
+    def update_user_bookings(self):
+        hotel_name = input("Enter the hotel name: ")
         hotel = self.__session.execute(
             select(Hotel).where(Hotel.name == hotel_name).options(joinedload(Hotel.rooms).joinedload(Room.bookings))
         ).scalar()
@@ -164,39 +210,31 @@ class AdminUI:
             print("Hotel not found.")
             return
 
-        print(f"Bookings for {hotel.name}:")
+        print(f"Updating bookings for hotel: {hotel.name}")
         for room in hotel.rooms:
             for booking in room.bookings:
-                print(f"Booking ID: {booking.id}, Room: {room.number}, Start Date: {booking.start_date}, End Date: {booking.end_date}, Guests: {booking.number_of_guests}, Comment: {booking.comment}")
+                print(f"Booking ID: {booking.id}, Guest ID: {booking.guest_id}, Room Number: {room.number}, "
+                      f"Start Date: {booking.start_date}, End Date: {booking.end_date}, Guests: {booking.number_of_guests}, "
+                      f"Comment: {booking.comment}")
+                print("Leave fields blank to keep current values.")
+                new_start_date = input(f"Enter new start date (current: {booking.start_date}, YYYY-MM-DD): ") or booking.start_date
+                new_end_date = input(f"Enter new end date (current: {booking.end_date}, YYYY-MM-DD): ") or booking.end_date
+                new_number_of_guests = input(f"Enter new number of guests (current: {booking.number_of_guests}): ")
+                new_number_of_guests = int(new_number_of_guests) if new_number_of_guests else booking.number_of_guests
+                new_comment = input(f"Enter new comment (current: {booking.comment}): ") or booking.comment
 
-        booking_id = int(input("Enter the booking ID to update: "))
-        booking = self.__session.query(Booking).filter_by(id=booking_id).first()
-        if not booking:
-            print(f"Booking ID {booking_id} not found.")
-            return
+                if new_number_of_guests > room.max_guests:
+                    print(f"Cannot update booking {booking.id}: number of guests exceeds room capacity.")
+                    continue
 
-        print("Leave fields blank to keep current values.")
-        new_start_date = input(f"Enter new start date (current: {booking.start_date}, YYYY-MM-DD): ")
-        new_end_date = input(f"Enter new end date (current: {booking.end_date}, YYYY-MM-DD): ")
-        new_guests = input(f"Enter new number of guests (current: {booking.number_of_guests}): ")
-        new_comment = input(f"Enter new comment (current: {booking.comment}): ") or booking.comment
-
-        if new_start_date:
-            booking.start_date = datetime.strptime(new_start_date, '%Y-%m-%d').date()
-        if new_end_date:
-            booking.end_date = datetime.strptime(new_end_date, '%Y-%m-%d').date()
-        if new_guests:
-            max_guests = booking.room.max_guests
-            if int(new_guests) > max_guests:
-                print(f"Error: The room can only accommodate up to {max_guests} guests.")
-                return
-            booking.number_of_guests = int(new_guests)
-        booking.comment = new_comment
+                booking.start_date = new_start_date
+                booking.end_date = new_end_date
+                booking.number_of_guests = new_number_of_guests
+                booking.comment = new_comment
 
         self.__session.commit()
-        print(f"Booking updated: {booking}")
+        print("Bookings updated successfully.")
 
     @staticmethod
     def clear():
         os.system('cls' if os.name == 'nt' else 'clear')
-

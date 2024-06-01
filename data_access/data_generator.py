@@ -5,26 +5,51 @@ from random import seed, choices
 
 from sqlalchemy import Engine, select
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from data_models.models import *
 
 def generate_system_data(engine: Engine, verbose: bool = False) -> None:
     with Session(engine) as session:
-        administrator = Role(name="administrator", access_level=sys.maxsize)
-        registered_user = Role(name="registered_user", access_level=1)
-        admin_login = Login(username="admin", password="password", role=administrator)
-        session.add_all([administrator, registered_user, admin_login])
-        session.commit()
-        if verbose:
-            print("#" * 50)
-            print("Roles added:", 2)
-            print("#" * 50)
-            print(administrator)
-            print(registered_user)
-            print("#" * 50)
-            print("Login added:", 1)
-            print("#" * 50)
-            print(admin_login)
+        try:
+            administrator = Role(name="administrator", access_level=sys.maxsize)
+            registered_user = Role(name="registered_user", access_level=1)
+            session.add_all([administrator, registered_user])
+            session.commit()
+
+            if verbose:
+                print("#" * 50)
+                print("Roles added:", 2)
+                print("#" * 50)
+                print(administrator)
+                print(registered_user)
+
+            # Check if admin login already exists
+            existing_admin = session.execute(
+                select(Login).where(Login.username == "admin")
+            ).scalar_one_or_none()
+
+            if not existing_admin:
+                admin_login = Login(username="admin", password="password", role=administrator)
+                session.add(admin_login)
+                session.commit()
+
+                if verbose:
+                    print("#" * 50)
+                    print("Login added:", 1)
+                    print("#" * 50)
+                    print(admin_login)
+            else:
+                if verbose:
+                    print("#" * 50)
+                    print("Admin login already exists.")
+                    print("#" * 50)
+
+        except IntegrityError as e:
+            session.rollback()
+            print(f"Error: {e.orig}")
+            if verbose:
+                print("Skipping duplicate entry...")
 
 def generate_hotels(engine: Engine, verbose: bool = False) -> None:
     with Session(engine) as session:
@@ -111,8 +136,7 @@ def generate_hotels(engine: Engine, verbose: bool = False) -> None:
                 for room in hotel.rooms:
                     print(f"{' ' * 5}{room}")
 
-
-def generate_guests(engine: Engine, verbose: bool):
+def generate_guests(engine: Engine, verbose: bool = False):
     with Session(engine) as session:
         guests_to_add = [
             Guest(
@@ -156,8 +180,7 @@ def generate_guests(engine: Engine, verbose: bool):
             for guest in guests_to_add:
                 print(guest)
 
-
-def generate_registered_guests(engine: Engine, verbose: bool):
+def generate_registered_guests(engine: Engine, verbose: bool = False):
     with Session(engine) as session:
         registered_guests_to_add = [
             RegisteredGuest(
@@ -191,8 +214,26 @@ def generate_registered_guests(engine: Engine, verbose: bool):
                 )
             )
         ]
-        session.add_all(registered_guests_to_add)
-        session.commit()
+
+        # Check for existing usernames
+        for guest in registered_guests_to_add:
+            existing_login = session.execute(
+                select(Login).where(Login.username == guest.login.username)
+            ).scalar_one_or_none()
+
+            if existing_login:
+                if verbose:
+                    print("#" * 50)
+                    print(f"Login for {guest.login.username} already exists.")
+                    print("#" * 50)
+            else:
+                session.add(guest)
+
+        try:
+            session.commit()
+        except IntegrityError as e:
+            session.rollback()
+            print(f"Error adding registered guests: {e.orig}")
 
         if verbose:
             print("#" * 50)
@@ -200,7 +241,6 @@ def generate_registered_guests(engine: Engine, verbose: bool):
             print("#" * 50)
             for guest in registered_guests_to_add:
                 print(guest)
-
 
 def generate_booking_dates(k: int = 20, s: int = 1):
     seed(s)
@@ -215,7 +255,6 @@ def generate_booking_dates(k: int = 20, s: int = 1):
                        enumerate(duration_choices)]
 
     return start_day_choices, end_day_choices
-
 
 def generate_random_bookings(engine: Engine, k: int = 20, s: int = 1, verbose: bool = False):
     seed(s)
@@ -254,7 +293,6 @@ def generate_random_bookings(engine: Engine, k: int = 20, s: int = 1, verbose: b
             for booking in bookings_to_add:
                 print(booking)
 
-
 def generate_random_registered_bookings(engine: Engine, k: int = 5, s: int = 1, verbose: bool = False):
     seed(s)
     start_days, end_days = generate_booking_dates(k, s)
@@ -283,9 +321,11 @@ def generate_random_registered_bookings(engine: Engine, k: int = 5, s: int = 1, 
             )
         session.add_all(registered_bookings_to_add)
         session.commit()
+
         if verbose:
             print("#" * 50)
             print("Registered bookings added:", len(registered_bookings_to_add))
             print("#" * 50)
             for booking in registered_bookings_to_add:
                 print(booking)
+

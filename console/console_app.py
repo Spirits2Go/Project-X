@@ -11,6 +11,19 @@ from ui.ReservationUI import ReservationUI
 from ui.AdminUI import AdminUI
 from business.UserManager import UserManager
 
+import sys
+from pathlib import Path
+import os
+
+# Add the project root to sys.path
+project_root = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(project_root))
+
+from ui.SearchUI import SearchUI
+from ui.ReservationUI import ReservationUI
+from ui.AdminUI import AdminUI
+from business.UserManager import UserManager
+
 class MainMenu:
     def __init__(self, db_file):
         self.user_manager = UserManager(db_file)
@@ -27,7 +40,7 @@ class MainMenu:
             print("2. Book a Room")
             print("3. Admin Management")
             print("4. Create User")
-            print("5. Log Out" if self.logged_in_user else "5. Log In")
+            print("5. Log Out" if self.user_manager.is_logged_in() else "5. Log In")
             print("6. Quit")
 
             choice = input("Enter Option (1-6): ")
@@ -36,8 +49,8 @@ class MainMenu:
             elif choice == "2":
                 self.reservation_ui.show_reservation_menu()
             elif choice == "3":
-                if self.logged_in_user:
-                    role = self.user_manager.get_user_role(self.logged_in_user)
+                if self.user_manager.is_logged_in():
+                    role = self.user_manager.get_user_role(self.user_manager.get_current_user())
                     if role == 'administrator':
                         self.admin_ui.show_admin_menu()
                     else:
@@ -49,7 +62,7 @@ class MainMenu:
             elif choice == "4":
                 self.create_user()
             elif choice == "5":
-                if self.logged_in_user:
+                if self.user_manager.is_logged_in():
                     self.logout()
                 else:
                     self.login()
@@ -72,9 +85,9 @@ class MainMenu:
             input("Press Enter to continue...")
 
     def logout(self):
-        self.logged_in_user = None
         self.user_manager.logout()
-        print("Logout successful")
+        self.logged_in_user = None
+        print("Logged out successfully")
         input("Press Enter to continue...")
 
     def create_user(self):
@@ -102,5 +115,3 @@ class MainMenu:
 if __name__ == "__main__":
     current_ui = MainMenu("../data/database.db")
     current_ui.show_menu()
-
-
