@@ -11,19 +11,6 @@ from ui.ReservationUI import ReservationUI
 from ui.AdminUI import AdminUI
 from business.UserManager import UserManager
 
-import sys
-from pathlib import Path
-import os
-
-# Add the project root to sys.path
-project_root = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(project_root))
-
-from ui.SearchUI import SearchUI
-from ui.ReservationUI import ReservationUI
-from ui.AdminUI import AdminUI
-from business.UserManager import UserManager
-
 class MainMenu:
     def __init__(self, db_file):
         self.user_manager = UserManager(db_file)
