@@ -27,15 +27,16 @@ class MainMenu:
             print("2. Book a Room")
             print("3. Admin Management")
             print("4. Create User")
-            print("5. Quit")
+            print("5. Log Out" if self.logged_in_user else "5. Log In")
+            print("6. Quit")
 
-            choice = input("Enter Option (1-5): ")
+            choice = input("Enter Option (1-6): ")
             if choice == "1":
                 self.search_ui.show_search_menu()
             elif choice == "2":
                 self.reservation_ui.show_reservation_menu()
             elif choice == "3":
-                if self.login():
+                if self.logged_in_user:
                     role = self.user_manager.get_user_role(self.logged_in_user)
                     if role == 'administrator':
                         self.admin_ui.show_admin_menu()
@@ -43,11 +44,16 @@ class MainMenu:
                         print("Access denied. You must be an admin to access this menu.")
                         input("Press Enter to continue...")
                 else:
-                    print("Invalid credentials. Please try again.")
+                    print("You must log in to access the admin menu.")
                     input("Press Enter to continue...")
             elif choice == "4":
                 self.create_user()
             elif choice == "5":
+                if self.logged_in_user:
+                    self.logout()
+                else:
+                    self.login()
+            elif choice == "6":
                 break
             else:
                 print("Invalid choice, please select a valid option.")
@@ -60,10 +66,16 @@ class MainMenu:
         if user:
             print("Login successful")
             self.logged_in_user = user
-            return True
+            input("Press Enter to continue...")
         else:
             print("Login failed")
-            return False
+            input("Press Enter to continue...")
+
+    def logout(self):
+        self.logged_in_user = None
+        self.user_manager.logout()
+        print("Logout successful")
+        input("Press Enter to continue...")
 
     def create_user(self):
         role_mapping = {
@@ -80,6 +92,7 @@ class MainMenu:
             print(f"User created: {new_user.username}")
         else:
             print("Failed to create user. Please ensure the role exists.")
+        input("Press Enter to continue...")
 
     @staticmethod
     def clear():
@@ -89,3 +102,5 @@ class MainMenu:
 if __name__ == "__main__":
     current_ui = MainMenu("../data/database.db")
     current_ui.show_menu()
+
+
