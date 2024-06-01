@@ -29,9 +29,10 @@ class ReservationUI:
             print("2. Update Booking")
             print("3. Delete Booking")
             print("4. View My Bookings")
-            print("5. Back to Main Menu")
+            print("5. Export Booking Details")
+            print("6. Back to Main Menu")
 
-            choice = input("Enter Option (1-5): ")
+            choice = input("Enter Option (1-6): ")
             if choice == "1":
                 self.create_booking()
             elif choice == "2":
@@ -41,6 +42,8 @@ class ReservationUI:
             elif choice == "4":
                 self.view_bookings()
             elif choice == "5":
+                self.export_booking_details()
+            elif choice == "6":
                 break
             else:
                 print("Invalid choice, please select a valid option.")
@@ -65,35 +68,24 @@ class ReservationUI:
 
         user_id = user.id
         hotel_name = input("Enter the hotel name: ")
-        hotel = self.__session.execute(select(Hotel).where(Hotel.name.like(f"%{hotel_name}%"))).scalar()
-
-        if not hotel:
-            print(f"No hotel found with the name {hotel_name}.")
-            return
-
-        rooms = self.__session.execute(select(Room).where(Room.hotel_id == hotel.id)).scalars().all()
-        if not rooms:
-            print(f"No rooms available in {hotel.name}.")
-            return
-
-        print(f"Available rooms in {hotel.name}:")
-        for room in rooms:
-            print(f"Room Number: {room.number}, Type: {room.type}, Price per Night: {room.price} CHF")
-
-        room_number = input("Enter the room number to book: ")
-        selected_room = next((room for room in rooms if room.number == room_number), None)
-
-        if not selected_room:
-            print(f"Room number {room_number} not found in {hotel.name}.")
-            return
-
+        room_number = input("Enter the room number: ")
         start_date_str = input("Enter start date (YYYY-MM-DD): ")
         end_date_str = input("Enter end date (YYYY-MM-DD): ")
         guests = int(input("Enter number of guests: "))
         comment = input("Enter any comments (optional): ")
 
-        if guests > selected_room.max_guests:
-            print(f"The room can accommodate only {selected_room.max_guests} guests.")
+        hotel = self.__session.execute(select(Hotel).where(Hotel.name == hotel_name)).scalar()
+        if not hotel:
+            print(f"Hotel '{hotel_name}' not found.")
+            return
+
+        room = self.__session.execute(select(Room).where(Room.hotel_id == hotel.id, Room.number == room_number)).scalar()
+        if not room:
+            print(f"Room '{room_number}' not found in hotel '{hotel_name}'.")
+            return
+
+        if guests > room.max_guests:
+            print(f"Room '{room_number}' in hotel '{hotel_name}' cannot accommodate {guests} guests.")
             return
 
         try:
@@ -101,8 +93,8 @@ class ReservationUI:
             end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
             booking = Booking(
                 guest_id=user_id,
-                room_hotel_id=hotel.id,
-                room_number=selected_room.number,
+                room_hotel_id=room.hotel_id,
+                room_number=room.number,
                 start_date=start_date,
                 end_date=end_date,
                 number_of_guests=guests,
@@ -115,46 +107,28 @@ class ReservationUI:
             print(f"Error parsing dates: {e}")
 
     def update_booking(self):
-        user = self.user_manager.get_current_user()
-        if not user:
-            print("You must be logged in to update a booking.")
-            return
-
-        user_id = user.id
-        bookings = self.__session.query(Booking).filter_by(guest_id=user_id).all()
-        if not bookings:
-            print("You have no bookings to update.")
-            return
-
-        print("Your Bookings:")
-        for booking in bookings:
-            print(f"Booking ID: {booking.id}, Hotel ID: {booking.room_hotel_id}, Room Number: {booking.room_number}, "
-                  f"Start Date: {booking.start_date}, End Date: {booking.end_date}, Guests: {booking.number_of_guests}, "
-                  f"Comment: {booking.comment}")
-
+        self.view_bookings()
         booking_id = int(input("Enter the booking ID to update: "))
-        booking = self.__session.query(Booking).filter_by(id=booking_id, guest_id=user_id).first()
-
+        booking = self.__session.query(Booking).filter_by(id=booking_id).first()
         if not booking:
-            print(f"Booking ID {booking_id} not found or you do not have permission to update it.")
+            print(f"Booking ID {booking_id} not found.")
             return
 
         print("Leave fields blank to keep current values.")
-
         start_date_str = input(f"Enter new start date (current: {booking.start_date}, YYYY-MM-DD): ")
         end_date_str = input(f"Enter new end date (current: {booking.end_date}, YYYY-MM-DD): ")
-        guests = input(f"Enter new number of guests (current: {booking.number_of_guests}): ")
+        guests_str = input(f"Enter new number of guests (current: {booking.number_of_guests}): ")
         comment = input(f"Enter new comment (current: {booking.comment}): ")
 
         if start_date_str:
             booking.start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
         if end_date_str:
             booking.end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
-        if guests:
-            guests = int(guests)
+        if guests_str:
+            guests = int(guests_str)
             room = self.__session.query(Room).filter_by(hotel_id=booking.room_hotel_id, number=booking.room_number).first()
             if guests > room.max_guests:
-                print(f"The room can accommodate only {room.max_guests} guests.")
+                print(f"Room cannot accommodate {guests} guests.")
                 return
             booking.number_of_guests = guests
         if comment:
@@ -164,37 +138,15 @@ class ReservationUI:
         print(f"Booking updated: {booking}")
 
     def delete_booking(self):
-        user = self.user_manager.get_current_user()
-        if not user:
-            print("You must be logged in to delete a booking.")
-            return
-
-        user_id = user.id
-        bookings = self.__session.query(Booking).filter_by(guest_id=user_id).all()
-        if not bookings:
-            print("You have no bookings to delete.")
-            return
-
-        print("Your Bookings:")
-        for booking in bookings:
-            print(f"Booking ID: {booking.id}, Hotel ID: {booking.room_hotel_id}, Room Number: {booking.room_number}, "
-                  f"Start Date: {booking.start_date}, End Date: {booking.end_date}, Guests: {booking.number_of_guests}, "
-                  f"Comment: {booking.comment}")
-
+        self.view_bookings()
         booking_id = int(input("Enter the booking ID to delete: "))
-        booking = self.__session.query(Booking).filter_by(id=booking_id, guest_id=user_id).first()
-
-        if not booking:
-            print(f"Booking ID {booking_id} not found or you do not have permission to delete it.")
-            return
-
-        confirm = input(f"Are you sure you want to delete Booking ID {booking.id}? (yes/no): ")
-        if confirm.lower() == 'yes':
+        booking = self.__session.query(Booking).filter_by(id=booking_id).first()
+        if booking:
             self.__session.delete(booking)
             self.__session.commit()
-            print(f"Booking ID {booking.id} deleted.")
+            print(f"Booking ID {booking_id} deleted.")
         else:
-            print("Deletion cancelled.")
+            print(f"Booking ID {booking_id} not found.")
 
     def view_bookings(self):
         user = self.user_manager.get_current_user()
@@ -211,6 +163,38 @@ class ReservationUI:
                       f"Comment: {booking.comment}")
         else:
             print("You have no bookings.")
+
+    def export_booking_details(self):
+        user = self.user_manager.get_current_user()
+        if not user:
+            print("You must be logged in to export your bookings.")
+            return
+
+        user_id = user.id
+        bookings = self.__session.query(Booking).filter_by(guest_id=user_id).all()
+        if not bookings:
+            print("You have no bookings to export.")
+            return
+
+        with open(f'{user.username}_bookings.txt', 'w') as file:
+            for booking in bookings:
+                hotel = self.__session.query(Hotel).filter_by(id=booking.room_hotel_id).first()
+                room = self.__session.query(Room).filter_by(hotel_id=booking.room_hotel_id, number=booking.room_number).first()
+                address = self.__session.query(Address).filter_by(id=hotel.address_id).first()
+                file.write(f"Booking ID: {booking.id}\n")
+                file.write(f"Hotel: {hotel.name}\n")
+                file.write(f"Address: {address.street}, {address.city}, {address.zip}\n")
+                file.write(f"Room Number: {room.number}\n")
+                file.write(f"Room Type: {room.type}\n")
+                file.write(f"Room Description: {room.description}\n")
+                file.write(f"Room Amenities: {room.amenities}\n")
+                file.write(f"Price per Night: {room.price}\n")
+                file.write(f"Start Date: {booking.start_date}\n")
+                file.write(f"End Date: {booking.end_date}\n")
+                file.write(f"Guests: {booking.number_of_guests}\n")
+                file.write(f"Comment: {booking.comment}\n")
+                file.write("\n")
+        print(f"Bookings exported to {user.username}_bookings.txt")
 
     @staticmethod
     def clear():

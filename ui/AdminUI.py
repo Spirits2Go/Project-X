@@ -5,6 +5,7 @@ from pathlib import Path
 from data_access.data_base import init_db
 from data_models.models import *
 from business.UserManager import UserManager
+from datetime import datetime
 
 class AdminUI:
     def __init__(self, database_file, user_manager):
@@ -26,9 +27,11 @@ class AdminUI:
             print("1. Add New Hotel")
             print("2. List All Hotels with Details")
             print("3. Find Hotel by Name")
-            print("4. Back to Main Menu")
+            print("4. Update Hotel Information")
+            print("5. Update Hotel Bookings")
+            print("6. Back to Main Menu")
 
-            choice = input("Enter Option (1-4): ")
+            choice = input("Enter Option (1-6): ")
             if choice == "1":
                 self.add_new_hotel()
             elif choice == "2":
@@ -36,6 +39,10 @@ class AdminUI:
             elif choice == "3":
                 self.find_hotel_by_name()
             elif choice == "4":
+                self.update_hotel_information()
+            elif choice == "5":
+                self.update_hotel_bookings()
+            elif choice == "6":
                 break
             else:
                 print("Invalid choice, please select a valid option.")
@@ -119,6 +126,77 @@ class AdminUI:
         else:
             print("Hotel not found.")
 
+    def update_hotel_information(self):
+        name = input("Enter the hotel name to update: ")
+        hotel = self.__session.execute(
+            select(Hotel)
+            .where(Hotel.name == name)
+            .options(joinedload(Hotel.address))
+        ).scalar()
+        if not hotel:
+            print("Hotel not found.")
+            return
+
+        print("Leave fields blank to keep current values.")
+        new_name = input(f"Enter new name (current: {hotel.name}): ") or hotel.name
+        new_stars = input(f"Enter new star rating (current: {hotel.stars}): ")
+        new_stars = int(new_stars) if new_stars else hotel.stars
+        new_street = input(f"Enter new street (current: {hotel.address.street}): ") or hotel.address.street
+        new_zip = input(f"Enter new ZIP code (current: {hotel.address.zip}): ") or hotel.address.zip
+        new_city = input(f"Enter new city (current: {hotel.address.city}): ") or hotel.address.city
+
+        hotel.name = new_name
+        hotel.stars = new_stars
+        hotel.address.street = new_street
+        hotel.address.zip = new_zip
+        hotel.address.city = new_city
+
+        self.__session.commit()
+        print(f"Updated hotel: {hotel.name}")
+
+    def update_hotel_bookings(self):
+        hotel_name = input("Enter the hotel name to update bookings for: ")
+        hotel = self.__session.execute(
+            select(Hotel).where(Hotel.name == hotel_name).options(joinedload(Hotel.rooms).joinedload(Room.bookings))
+        ).scalar()
+
+        if not hotel:
+            print("Hotel not found.")
+            return
+
+        print(f"Bookings for {hotel.name}:")
+        for room in hotel.rooms:
+            for booking in room.bookings:
+                print(f"Booking ID: {booking.id}, Room: {room.number}, Start Date: {booking.start_date}, End Date: {booking.end_date}, Guests: {booking.number_of_guests}, Comment: {booking.comment}")
+
+        booking_id = int(input("Enter the booking ID to update: "))
+        booking = self.__session.query(Booking).filter_by(id=booking_id).first()
+        if not booking:
+            print(f"Booking ID {booking_id} not found.")
+            return
+
+        print("Leave fields blank to keep current values.")
+        new_start_date = input(f"Enter new start date (current: {booking.start_date}, YYYY-MM-DD): ")
+        new_end_date = input(f"Enter new end date (current: {booking.end_date}, YYYY-MM-DD): ")
+        new_guests = input(f"Enter new number of guests (current: {booking.number_of_guests}): ")
+        new_comment = input(f"Enter new comment (current: {booking.comment}): ") or booking.comment
+
+        if new_start_date:
+            booking.start_date = datetime.strptime(new_start_date, '%Y-%m-%d').date()
+        if new_end_date:
+            booking.end_date = datetime.strptime(new_end_date, '%Y-%m-%d').date()
+        if new_guests:
+            max_guests = booking.room.max_guests
+            if int(new_guests) > max_guests:
+                print(f"Error: The room can only accommodate up to {max_guests} guests.")
+                return
+            booking.number_of_guests = int(new_guests)
+        booking.comment = new_comment
+
+        self.__session.commit()
+        print(f"Booking updated: {booking}")
+
     @staticmethod
     def clear():
         os.system('cls' if os.name == 'nt' else 'clear')
+
