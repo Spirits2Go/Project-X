@@ -66,8 +66,12 @@ class SearchUI:
 
     def check_for_booking_date(self):
         try:
+            city = input("Enter the city to search for available rooms: ").strip()
             check_in_date_str = input("Enter your check-in date (YYYY-MM-DD): ")
             check_out_date_str = input("Enter your check-out date (YYYY-MM-DD): ")
+            guests = int(input("Enter number of guests: "))
+            stars = input("Enter minimum stars (press Enter to skip): ")
+            stars = int(stars) if stars else None
 
             check_in_date = datetime.strptime(check_in_date_str, '%Y-%m-%d').date()
             check_out_date = datetime.strptime(check_out_date_str, '%Y-%m-%d').date()
@@ -77,7 +81,7 @@ class SearchUI:
                 return
 
             duration = (check_out_date - check_in_date).days
-            available_rooms = self.get_available_rooms(check_in_date, check_out_date)
+            available_rooms = self.get_available_rooms(city, check_in_date, check_out_date, guests, stars)
 
             if not available_rooms:
                 print("No rooms available for the selected dates.")
@@ -160,23 +164,38 @@ class SearchUI:
         query = select(Hotel).join(Hotel.address).where(func.lower(Address.city) == location.lower())
         return self.__session.execute(query).scalars().all()
 
-    def get_available_rooms(self, check_in_date, check_out_date):
-        query = select(Room).join(Hotel).outerjoin(Booking, and_(
-            Room.hotel_id == Booking.room_hotel_id,
-            Room.number == Booking.room_number
-        )).filter(
-            or_(
-                Booking.id == None,
-                not_(
-                    and_(
-                        Booking.start_date < check_out_date,
-                        Booking.end_date > check_in_date
+    def get_available_rooms(self, city, check_in_date, check_out_date, guests, stars):
+        query = (
+            select(Room)
+            .join(Room.hotel)
+            .join(Hotel.address)
+            .outerjoin(Booking, and_(
+                Room.hotel_id == Booking.room_hotel_id,
+                Room.number == Booking.room_number
+            ))
+            .filter(
+                and_(
+                    func.lower(Address.city) == city.lower(),
+                    Room.max_guests >= guests,
+                    or_(
+                        Booking.id == None,
+                        not_(
+                            and_(
+                                Booking.start_date < check_out_date,
+                                Booking.end_date > check_in_date
+                            )
+                        )
                     )
                 )
             )
-        ).options(joinedload(Room.bookings), joinedload(Room.hotel)).distinct()
+            .options(joinedload(Room.bookings), joinedload(Room.hotel).joinedload(Hotel.address))
+        )
 
-        available_rooms = self.__session.execute(query).unique().scalars().all()
+        if stars:
+            query = query.filter(Hotel.stars >= stars)
+
+        result = self.__session.execute(query).unique()
+        available_rooms = result.scalars().all()
         return available_rooms
 
     def calculate_total_price(self, price_per_night, duration):

@@ -1,6 +1,4 @@
 import os
-from business.HotelManagement import HotelManager
-from business.ReservationManager import ReservationManager
 from business.UserManager import UserManager
 from ui.SearchUI import SearchUI
 from ui.ReservationUI import ReservationUI
