@@ -5,15 +5,19 @@
 ### **Project members**
 Koyuncu Helin, Messmer Aurelius, Shanmuganathan Teveen, Jason Jimenez  
 
+
 ### **Overview**
 joint tasks:  
+
 register on GitHub
 
 1.1. Als Gastnutzer möchte ich die verfügbaren Hotels durchsuchen, damit ich dasjenige auswählen kann, welches meinen Wünschen entspricht.
 
 1.2. Als Gastnutzer möchte ich Details zu verschiedenen Zimmertypen (EZ, DZ, Familienzimmer), die in einem Hotel verfügbar sind, sehen, einschließlich der maximalen Anzahl von Gästen für dieses Zimmer, Beschreibung, Preis und Ausstattung, um eine fundierte Entscheidung zu treffen.
 
+
 **Helin**
+
 user stories: 
 
 1.2.2. Ich möchte nur die verfügbaren Zimmer sehen.
@@ -32,7 +36,9 @@ writing the documentation
 
 role:  the bee "managing time"
 
+
 **Aurelius**
+
 user stories: 
 
 1.1.1. Ich möchte alle Hotels in einer Stadt durchsuchen, damit ich das Hotel nach meinem bevorzugten Standort (Stadt) auswählen kann.
@@ -49,7 +55,9 @@ creating the GitHub repository, assigning the user stories
 
 role:  the wolve "keeping the pack together"
 
+
 **Teveen**
+
 user stories:
 
 1.1.2. Ich möchte alle Hotels in einer Stadt nach der Anzahl der Sterne durchsuchen.
@@ -68,7 +76,9 @@ creating repository
 
 role:  the dolphin "comunicates with the outside world"
 
+
 **Jason**
+
 user stories:
 
 1.1.4. Ich möchte alle Hotels in einer Stadt durchsuchen, die während meines Aufenthaltes ("von" (start_date) und "bis" (end_date)) Zimmer für meine Gästezahl zur Verfügung haben, entweder mit oder ohne Anzahl der Sterne, damit ich nur relevante Ergebnisse sehe.
