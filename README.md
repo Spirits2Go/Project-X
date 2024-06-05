@@ -101,3 +101,30 @@ other tasks:
 creating PyCharm environment
 
 role:  the octopus "solving problems"
+
+
+
+# **Instruction**
+
+
+
+# **Assumptions and interpretation**
+
+We analyzed the user stories and tried to implement them. We considered what we need to keep in mind, what needs to be changed or adapted, and what we can implement directly. We started a GitHub project and roughly outlined who is "serving" which user stories.
+
+First, we created the Search Manager and implemented the first 5-6 user stories, including the following:
+
+1.1 and its subchapters:
+1.1. As a guest user, I want to search for available hotels so that I can choose the one that suits my needs.
+
+We opened a Python file and tried to execute the applications we learned in class. We created our own database (list) of hotels (Ibiz Hotel, Cozy Limon, Luxury Shan, Motel Serhan, Ling Ling's Palace, Case del Patron). We worked with lists that are modifiable, as opposed to tuples that are immutable.
+
+We implemented search functions, e.g. search by preferred location, number of guests, number of stars, price, date. We set up these functions based on the Search Manager. This allowed us to learn how to implement the functions and develop an understanding of the individual components in Python. We dealt with classes, functions, lists, tuples, loops (while loops) and if statements.
+
+We have included individual functions such as filter_hotels_by_location(location) and filter_hotels_by_guests(hotels, guests). We use .lower in our functions to make them case-insensitive for the user.
+
+Then we looked at the structure of UE3_classroom. We considered how to navigate between the different Python files, how to retrieve and edit the database, and how to access functions in other files. We tried to fit our previously implemented user stories into this structure.
+
+We programmed the user stories from GitHub and continuously made improvements. Based on coaching with Charuta, we set up the menu structure and implemented her input. We clarified our questions with her.
+
+This is how we came to our current result and have continuously made improvements all around.
