@@ -50,7 +50,7 @@ class SearchUI:
         hotels = self.get_hotels_by_name(name)
         if hotels:
             for hotel in hotels:
-                print(f"Hotel: {hotel.name}, Stars: {hotel.stars}, Address: {hotel.address.city}")
+                print(f"Hotel: {hotel.name}, Stars: {hotel.stars}, Address: {hotel.address.street}, {hotel.address.zip} {hotel.address.city}")
         else:
             print("No hotels found with that name.")
         input("Press Enter to return to search menu...")
@@ -62,7 +62,7 @@ class SearchUI:
             print("There aren't any hotels in your preferred location.")
             return
         for hotel in matching_hotels:
-            print(f"Hotel: {hotel.name}, Location: {hotel.address.city}")
+            print(f"Hotel: {hotel.name}, Address: {hotel.address.street}, {hotel.address.zip} {hotel.address.city}, Stars: {hotel.stars}")
 
     def check_for_booking_date(self):
         try:
@@ -89,7 +89,7 @@ class SearchUI:
                 print("Available rooms:")
                 for room in available_rooms:
                     total_price = self.calculate_total_price(room.price, duration)
-                    print(f"Room Number: {room.number}, Type: {room.type}, Price per Night: {room.price} CHF, Total Cost for {duration} Nights: {total_price} CHF in Hotel: {room.hotel.name}, Location: {room.hotel.address.city}")
+                    print(f"Room Number: {room.number}, Type: {room.type}, Price per Night: {room.price} CHF, Total Cost for {duration} Nights: {total_price} CHF in Hotel: {room.hotel.name}, Location: {room.hotel.address.street}, {room.hotel.address.zip} {room.hotel.address.city}")
         except ValueError as e:
             print(f"Error parsing dates, please use the format YYYY-MM-DD: {e}")
 
@@ -111,7 +111,7 @@ class SearchUI:
             print("There aren't any matching hotels available.")
         else:
             for hotel in matching_hotels:
-                print(f"Hotel: {hotel.name}, Location: {hotel.address.city}")
+                print(f"Hotel: {hotel.name}, Address: {hotel.address.street}, {hotel.address.zip} {hotel.address.city}")
                 for room in hotel.rooms:
                     if room.max_guests >= guests:
                         print(f"Room Number: {room.number}, Capacity: {room.max_guests}")
@@ -126,7 +126,7 @@ class SearchUI:
                     print("No rooms found under the price limit provided.")
                 else:
                     for room in rooms_under_price:
-                        print(f"Room Number: {room.number}, Type: {room.type}, Price: {room.price} in Hotel: {room.hotel.name}, Location: {room.hotel.address.city}")
+                        print(f"Room Number: {room.number}, Type: {room.type}, Price: {room.price} in Hotel: {room.hotel.name}, Location: {room.hotel.address.street}, {room.hotel.address.zip} {room.hotel.address.city}")
             else:
                 print("No maximum price entered.")
         except ValueError:
@@ -144,7 +144,7 @@ class SearchUI:
                         print("No hotels were found that fulfill the minimum star requirement.")
                     else:
                         for hotel in matching_hotels:
-                            print(f"Hotel: {hotel.name}, Stars: {hotel.stars}, Location: {hotel.address.city}")
+                            print(f"Hotel: {hotel.name}, Stars: {hotel.stars}, Address: {hotel.address.street}, {hotel.address.zip} {hotel.address.city}")
                         return
                 except ValueError:
                     print("Invalid input. Please enter a whole number for stars.")
@@ -155,13 +155,13 @@ class SearchUI:
             print("Maximum attempts exceeded. Please restart and try again.")
 
     def get_hotels_by_name(self, name):
-        query = select(Hotel).where(Hotel.name.like(f"%{name}%"))
+        query = select(Hotel).where(Hotel.name.like(f"%{name}%")).options(joinedload(Hotel.address))
         return self.__session.execute(query).scalars().all()
 
     def filter_hotels_by_location(self, location):
         if not location:
-            return self.__session.execute(select(Hotel)).scalars().all()
-        query = select(Hotel).join(Hotel.address).where(func.lower(Address.city) == location.lower())
+            return self.__session.execute(select(Hotel).options(joinedload(Hotel.address))).scalars().all()
+        query = select(Hotel).join(Hotel.address).where(func.lower(Address.city) == location.lower()).options(joinedload(Hotel.address))
         return self.__session.execute(query).scalars().all()
 
     def get_available_rooms(self, city, check_in_date, check_out_date, guests, stars):
@@ -211,21 +211,17 @@ class SearchUI:
         return filtered_hotels
 
     def filter_hotels_by_max_price(self, max_price):
-        query = select(Room).join(Hotel).where(Room.price <= max_price).options(joinedload(Room.hotel))
+        query = select(Room).join(Hotel).where(Room.price <= max_price).options(joinedload(Room.hotel).joinedload(Hotel.address))
         rooms = self.__session.execute(query).scalars().all()
         return rooms
 
     def filter_hotels_by_minimum_stars(self, min_stars):
-        query = select(Hotel).where(Hotel.stars >= min_stars)
+        query = select(Hotel).where(Hotel.stars >= min_stars).options(joinedload(Hotel.address))
         return self.__session.execute(query).scalars().all()
 
     @staticmethod
     def clear():
         os.system('cls' if os.name == 'nt' else 'clear')
-
-
-
-
 
 
 
