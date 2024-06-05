@@ -1,26 +1,26 @@
 # Project-X
-## a Spirits2Go production
+## a Spirits2Go production  
 
 
-### **Projektmitglieder**
-Koyuncu Helin, Messmer Aurelius, Shanmuganathan Teveen, Jason Jimenez
+### **Project members**
+Koyuncu Helin, Messmer Aurelius, Shanmuganathan Teveen, Jason Jimenez  
 
-### **overview**
-joint tasks:
+### **Overview**
+joint tasks:  
 
 
 **Helin**
 user stories: 
-other tasks:
+other tasks:  
 
 **Aurelius**
 user stories: 
-other tasks:
+other tasks:  
 
 **Teveen**
 user stories: 
-other tasks:
+other tasks:  
 
-Jason:
-user stories: 
+**Jason**
+user stories:
 other tasks:
