@@ -2,11 +2,11 @@
 ## a Spirits2Go production  
 
 
-### **Project members**
+## **Project members**
 Koyuncu Helin, Messmer Aurelius, Shanmuganathan Teveen, Jason Jimenez  
 
 
-### **Overview**
+## **Overview**
 joint tasks:  
 
 register on GitHub
@@ -16,7 +16,8 @@ register on GitHub
 1.2. Als Gastnutzer möchte ich Details zu verschiedenen Zimmertypen (EZ, DZ, Familienzimmer), die in einem Hotel verfügbar sind, sehen, einschließlich der maximalen Anzahl von Gästen für dieses Zimmer, Beschreibung, Preis und Ausstattung, um eine fundierte Entscheidung zu treffen.
 
 
-**Helin**
+
+### **Helin**
 
 user stories: 
 
@@ -37,7 +38,8 @@ writing the documentation
 role:  the bee "managing time"
 
 
-**Aurelius**
+
+### **Aurelius**
 
 user stories: 
 
@@ -56,7 +58,8 @@ creating the GitHub repository, assigning the user stories
 role:  the wolve "keeping the pack together"
 
 
-**Teveen**
+
+### **Teveen**
 
 user stories:
 
@@ -77,7 +80,8 @@ creating repository
 role:  the dolphin "comunicates with the outside world"
 
 
-**Jason**
+
+### **Jason**
 
 user stories:
 
