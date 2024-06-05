@@ -20,6 +20,8 @@ register on GitHub
 
 ### Helin
 
+role:  the bee "managing time"
+
 user stories: 
 
 1.2.2. Ich möchte nur die verfügbaren Zimmer sehen.
@@ -36,11 +38,11 @@ other tasks:
 
 writing the documentation
 
-role:  the bee "managing time"
-
 
 
 ### **Aurelius**
+
+role:  the wolve "keeping the pack together"
 
 user stories: 
 
@@ -56,11 +58,11 @@ other tasks:
 
 creating the GitHub repository, assigning the user stories
 
-role:  the wolve "keeping the pack together"
-
 
 
 ### **Teveen**
+
+role:  the dolphin "comunicates with the outside world"
 
 user stories:
 
@@ -78,11 +80,11 @@ other tasks:
 
 creating repository
 
-role:  the dolphin "comunicates with the outside world"
-
 
 
 ### **Jason**
+
+role:  the octopus "solving problems"
 
 user stories:
 
@@ -100,12 +102,11 @@ other tasks:
 
 creating PyCharm environment
 
-role:  the octopus "solving problems"
-
 
 
 # **Instruction**
 
+The console_app is executed, accessing the other files and executing their respective functions.
 
 
 # **Assumptions and interpretation**
@@ -114,18 +115,21 @@ We analyzed the user stories and tried to implement them. We considered what we 
 
 First, we created the Search Manager and implemented the first 5-6 user stories, including the following:
 
-1.1 and its subchapters:
+1.1. and its subchapters:
+"Als Gastnutzer möchte ich die verfügbaren Hotels durchsuchen, damit ich dasjenige auswählen kann, welches meinen Wünschen entspricht."
 
-1.1. Als Gastnutzer möchte ich die verfügbaren Hotels durchsuchen, damit ich dasjenige auswählen kann, welches meinen Wünschen entspricht.
+We opened a Python file and tried to execute the applications we learned in class. We created our own database (list) of hotels (Ibis Hotel, Cozy Limon, Luxury Shan, Motel Serhan, Ling Ling's Palace, Case del Patron). We worked with lists that are modifiable, as opposed to tuples that are immutable.
 
-We opened a Python file and tried to execute the applications we learned in class. We created our own database (list) of hotels (Ibiz Hotel, Cozy Limon, Luxury Shan, Motel Serhan, Ling Ling's Palace, Case del Patron). We worked with lists that are modifiable, as opposed to tuples that are immutable.
-
-We implemented search functions, e.g. search by preferred location, number of guests, number of stars, price, date. We set up these functions based on the Search Manager. This allowed us to learn how to implement the functions and develop an understanding of the individual components in Python. We dealt with classes, functions, lists, tuples, loops (while loops) and if statements.
+We implemented search functions, e.g. search by preferred location, number of guests, number of stars, price, date. We set up these functions based on the Search Manager. This allowed us to learn how to implement the functions and develop an understanding of the individual components in Python. We dealt with classes, functions, lists, tuples, loops (while loops) and if statements etc.
 
 We have included individual functions such as filter_hotels_by_location(location) and filter_hotels_by_guests(hotels, guests). We use .lower in our functions to make them case-insensitive for the user.
 
 Then we looked at the structure of UE3_classroom. We considered how to navigate between the different Python files, how to retrieve and edit the database, and how to access functions in other files. We tried to fit our previously implemented user stories into this structure.
 
 We programmed the user stories from GitHub and continuously made improvements. Based on coaching with Charuta, we set up the menu structure and implemented her input. We clarified our questions with her.
+ 
+In general all the tasks assigned to us, where all separately done. If any questions occured or someone run into issues, we usually sat togheter, discussed and solved them as a group. 
+
+Our role animals correspond to our functions within the group. Everyone was assigned different responsibilities during the project to keep everything on track. 
 
 This is how we came to our current result and have continuously made improvements all around.
