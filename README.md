@@ -108,7 +108,8 @@ creating PyCharm environment
 
 ### Step-by-step instructions on how to use our application:
 
-Console_app is executed, which accesses the other files and executes their respective functions.
+1. Console_app is executed, which accesses the other files and executes their respective functions.
+2. 
 
 
 ## Assumptions and interpretation
