@@ -136,6 +136,7 @@ class Booking(Base):
     start_date: Mapped[date] = mapped_column("start_date")
     end_date: Mapped[date] = mapped_column("end_date")
     comment: Mapped[str] = mapped_column(nullable=True)
+    phone_number: Mapped[str] = mapped_column(nullable=True)  # New field
 
     # Relationship to Room
     room: Mapped[Room] = relationship("Room", back_populates="bookings", foreign_keys=[room_hotel_id, room_number])
@@ -148,4 +149,4 @@ class Booking(Base):
     )
 
     def __repr__(self) -> str:
-        return f"Booking(room={self.room!r}, guest={self.guest!r}, start_date={self.start_date!r}, end_date={self.end_date!r}, comment={self.comment!r})"
+        return f"Booking(room={self.room!r}, guest={self.guest!r}, start_date={self.start_date!r}, end_date={self.end_date!r}, comment={self.comment!r}, phone_number={self.phone_number!r})"

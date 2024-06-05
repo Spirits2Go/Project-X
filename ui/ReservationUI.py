@@ -68,21 +68,31 @@ class ReservationUI:
 
         user_id = user.id
         hotel_name = input("Enter the hotel name: ")
-        room_number = input("Enter the room number: ")
-        start_date_str = input("Enter start date (YYYY-MM-DD): ")
-        end_date_str = input("Enter end date (YYYY-MM-DD): ")
-        guests = int(input("Enter number of guests: "))
-        comment = input("Enter any comments (optional): ")
 
         hotel = self.__session.execute(select(Hotel).where(Hotel.name == hotel_name)).scalar()
         if not hotel:
             print(f"Hotel '{hotel_name}' not found.")
             return
 
-        room = self.__session.execute(select(Room).where(Room.hotel_id == hotel.id, Room.number == room_number)).scalar()
-        if not room:
-            print(f"Room '{room_number}' not found in hotel '{hotel_name}'.")
+        rooms = self.__session.execute(select(Room).where(Room.hotel_id == hotel.id, Room.is_available == True)).scalars().all()
+        if not rooms:
+            print(f"No available rooms found in hotel '{hotel_name}'.")
             return
+
+        print(f"Available rooms in '{hotel_name}':")
+        for room in rooms:
+            print(f"Room Number: {room.number}, Type: {room.type}, Description: {room.description}, Amenities: {room.amenities}, Price: {room.price} CHF, Max Guests: {room.max_guests}")
+
+        room_number = input("Enter the room number: ")
+        room = next((room for room in rooms if room.number == room_number), None)
+        if not room:
+            print(f"Room '{room_number}' not found or is not available in hotel '{hotel_name}'.")
+            return
+
+        start_date_str = input("Enter start date (YYYY-MM-DD): ")
+        end_date_str = input("Enter end date (YYYY-MM-DD): ")
+        guests = int(input("Enter number of guests: "))
+        comment = input("Enter any comments (optional): ")
 
         if guests > room.max_guests:
             print(f"Room '{room_number}' in hotel '{hotel_name}' cannot accommodate {guests} guests.")
@@ -91,6 +101,26 @@ class ReservationUI:
         try:
             start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
             end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            if end_date <= start_date:
+                print("End date must be after start date.")
+                return
+
+            overlapping_booking = self.__session.execute(
+                select(Booking).where(
+                    Booking.room_hotel_id == room.hotel_id,
+                    Booking.room_number == room.number,
+                    or_(
+                        and_(Booking.start_date <= start_date, Booking.end_date > start_date),
+                        and_(Booking.start_date < end_date, Booking.end_date >= end_date),
+                        and_(Booking.start_date >= start_date, Booking.end_date <= end_date)
+                    )
+                )
+            ).first()
+
+            if overlapping_booking:
+                print(f"Room '{room_number}' in hotel '{hotel_name}' is already booked for the selected dates.")
+                return
+
             booking = Booking(
                 guest_id=user_id,
                 room_hotel_id=room.hotel_id,
@@ -199,4 +229,3 @@ class ReservationUI:
     @staticmethod
     def clear():
         os.system('cls' if os.name == 'nt' else 'clear')
-

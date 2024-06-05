@@ -89,23 +89,30 @@ class SearchUI:
                 print("Available rooms:")
                 for room in available_rooms:
                     total_price = self.calculate_total_price(room.price, duration)
-                    print(f"Room Number: {room.number}, Type: {room.type}, Price per Night: {room.price} CHF, Total Cost for {duration} Nights: {total_price} CHF in Hotel: {room.hotel.name}, Location: {room.hotel.address.street}, {room.hotel.address.zip} {room.hotel.address.city}")
+                    print(
+                        f"Room Number: {room.number}, Type: {room.type}, Description: {room.description}, Amenities: {room.amenities}, "
+                        f"Price per Night: {room.price} CHF, Total Cost for {duration} Nights: {total_price} CHF in Hotel: {room.hotel.name}, "
+                        f"Location: {room.hotel.address.street}, {room.hotel.address.zip} {room.hotel.address.city}")
         except ValueError as e:
             print(f"Error parsing dates, please use the format YYYY-MM-DD: {e}")
 
     def ask_for_number_of_guests(self):
         matching_hotels = self.get_hotels_by_name('')  # Assuming this returns all hotels when an empty string is passed
-        guests = input("Enter the number of guests (press Enter to skip): ").strip()
-        if guests:
+        guests_input = input("Enter the number of guests (press Enter to skip): ").strip()
+
+        if guests_input:
             try:
-                guests = int(guests)
-                matching_hotels = self.filter_hotels_by_guests(matching_hotels, guests)
-                if not matching_hotels:
-                    print("No hotels found that can accommodate the number of guests specified.")
-                    return
+                guests = int(guests_input)
             except ValueError:
                 print("Invalid input. Please enter a valid number for the number of guests.")
                 return
+        else:
+            guests = None
+
+        matching_hotels = self.filter_hotels_by_guests(matching_hotels, guests)
+        if not matching_hotels:
+            print("No hotels found that can accommodate the number of guests specified.")
+            return
 
         if not matching_hotels:
             print("There aren't any matching hotels available.")
@@ -113,8 +120,11 @@ class SearchUI:
             for hotel in matching_hotels:
                 print(f"Hotel: {hotel.name}, Address: {hotel.address.street}, {hotel.address.zip} {hotel.address.city}")
                 for room in hotel.rooms:
-                    if room.max_guests >= guests:
-                        print(f"Room Number: {room.number}, Capacity: {room.max_guests}")
+                    if guests is None or room.max_guests >= guests:
+                        print(
+                            f"Room Number: {room.number}, Type: {room.type}, Description: {room.description}, Amenities: {room.amenities}, "
+                            f"Capacity: {room.max_guests}, Price: {room.price} CHF, Availability: {'Yes' if room.is_available else 'No'}")
+            input("Press Enter to return to search menu...")
 
     def ask_for_maximum_price(self):
         try:
@@ -177,6 +187,7 @@ class SearchUI:
                 and_(
                     func.lower(Address.city) == city.lower(),
                     Room.max_guests >= guests,
+                    Room.is_available == True,
                     or_(
                         Booking.id == None,
                         not_(
@@ -203,9 +214,11 @@ class SearchUI:
         return round(total_price * 20) / 20  # Rounding to the nearest 0.05 CHF
 
     def filter_hotels_by_guests(self, hotels, guests):
+        if guests is None:
+            return hotels
         filtered_hotels = []
         for hotel in hotels:
-            matching_rooms = [room for room in hotel.rooms if room.max_guests >= guests]
+            matching_rooms = [room for room in hotel.rooms if room.max_guests >= guests and room.is_available]
             if matching_rooms:
                 filtered_hotels.append(hotel)
         return filtered_hotels
@@ -222,10 +235,3 @@ class SearchUI:
     @staticmethod
     def clear():
         os.system('cls' if os.name == 'nt' else 'clear')
-
-
-
-
-
-
-

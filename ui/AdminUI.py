@@ -28,9 +28,10 @@ class AdminUI:
             print("3. Find Hotel by Name")
             print("4. Update Hotel Information")
             print("5. Update Room Information")
-            print("6. Back to Main Menu")
+            print("6. Edit Bookings")
+            print("7. Back to Main Menu")
 
-            choice = input("Enter Option (1-6): ")
+            choice = input("Enter Option (1-7): ")
             if choice == "1":
                 self.add_new_hotel()
             elif choice == "2":
@@ -42,6 +43,8 @@ class AdminUI:
             elif choice == "5":
                 self.update_room_information()
             elif choice == "6":
+                self.edit_bookings()
+            elif choice == "7":
                 break
             else:
                 print("Invalid choice, please select a valid option.")
@@ -189,6 +192,62 @@ class AdminUI:
             more_rooms = input("Do you want to update another room? (yes/no): ").lower() == 'yes'
             if not more_rooms:
                 break
+
+    def edit_bookings(self):
+        print("Listing all bookings:")
+        try:
+            bookings = self.__session.execute(
+                select(Booking)
+                .options(
+                    joinedload(Booking.guest),
+                    joinedload(Booking.room).joinedload(Room.hotel)
+                )
+            ).unique().scalars().all()
+
+            for booking in bookings:
+                guest_info = "Guest not found"
+                if booking.guest:
+                    guest_info = f"{booking.guest.firstname} {booking.guest.lastname}"
+                print(f"Booking ID: {booking.id}, Hotel: {booking.room.hotel.name}, Room Number: {booking.room.number}, "
+                      f"Guest: {guest_info}, Start Date: {booking.start_date}, "
+                      f"End Date: {booking.end_date}, Phone Number: {booking.phone_number}")
+
+            booking_id = int(input("Enter the booking ID to edit: "))
+            booking = self.__session.query(Booking).filter_by(id=booking_id).first()
+
+            if not booking:
+                print("Booking not found.")
+                return
+
+            print("Leave fields blank to keep current values.")
+            start_date_str = input(f"Enter new start date (current: {booking.start_date}, YYYY-MM-DD): ")
+            end_date_str = input(f"Enter new end date (current: {booking.end_date}, YYYY-MM-DD): ")
+            guests_str = input(f"Enter new number of guests (current: {booking.number_of_guests}): ")
+            phone_number = input(f"Enter new phone number (current: {booking.phone_number}): ")
+            comment = input(f"Enter new comment (current: {booking.comment}): ")
+
+            if start_date_str:
+                booking.start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            if end_date_str:
+                booking.end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+            if guests_str:
+                guests = int(guests_str)
+                room = self.__session.query(Room).filter_by(hotel_id=booking.room_hotel_id, number=booking.room_number).first()
+                if guests > room.max_guests:
+                    print(f"Room cannot accommodate {guests} guests.")
+                    return
+                booking.number_of_guests = guests
+            if phone_number:
+                booking.phone_number = phone_number
+            if comment:
+                booking.comment = comment
+
+            self.__session.commit()
+            print(f"Booking updated: {booking}")
+
+        except Exception as e:
+            print(f"Error: {e}")
+
 
     @staticmethod
     def clear():
