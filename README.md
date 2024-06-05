@@ -1,5 +1,5 @@
 # Project-X
-## a Spirits2Go production  
+### a Spirits2Go production  
 
 
 ## **Project members**
@@ -18,7 +18,7 @@ register on GitHub
 
 
 
-### **Helin**
+### Helin
 
 user stories: 
 
@@ -115,7 +115,8 @@ We analyzed the user stories and tried to implement them. We considered what we 
 First, we created the Search Manager and implemented the first 5-6 user stories, including the following:
 
 1.1 and its subchapters:
-1.1. As a guest user, I want to search for available hotels so that I can choose the one that suits my needs.
+
+1.1. Als Gastnutzer möchte ich die verfügbaren Hotels durchsuchen, damit ich dasjenige auswählen kann, welches meinen Wünschen entspricht.
 
 We opened a Python file and tried to execute the applications we learned in class. We created our own database (list) of hotels (Ibiz Hotel, Cozy Limon, Luxury Shan, Motel Serhan, Ling Ling's Palace, Case del Patron). We worked with lists that are modifiable, as opposed to tuples that are immutable.
 
