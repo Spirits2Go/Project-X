@@ -48,6 +48,4 @@ user stories:
 3.1.3. Ich möchte die Informationen bestimmter Hotels aktualisieren, z. B. den Namen, die Sterne usw.
 3.4. Ich möchte in der Lage sein, die Zimmerverfügbarkeit zu verwalten und die Preise in Echtzeit im Backend-System der Anwendung zu aktualisieren [Optional].
 other tasks:  creating PyCharm environment
-
-
 role:  the octopus "solving problems"
