@@ -2,11 +2,11 @@
 ### a Spirits2Go production  
 
 
-## **Project members**
+## Project members
 Koyuncu Helin, Messmer Aurelius, Shanmuganathan Teveen, Jason Jimenez  
 
 
-## **Overview**
+## Overview
 
 ### joint tasks:  
 
@@ -40,7 +40,7 @@ writing the documentation
 
 
 
-### **Aurelius**
+### Aurelius
 
 role:  the wolve "keeping the pack together"
 
@@ -60,7 +60,7 @@ creating the GitHub repository, assigning the user stories
 
 
 
-### **Teveen**
+### Teveen
 
 role:  the dolphin "comunicates with the outside world"
 
@@ -82,7 +82,7 @@ creating repository
 
 
 
-### **Jason**
+### Jason
 
 role:  the octopus "solving problems"
 
@@ -104,12 +104,14 @@ creating PyCharm environment
 
 
 
-# **Instruction**
+## Instruction
 
-The console_app is executed, accessing the other files and executing their respective functions.
+### Step-by-step instructions on how to use our application:
+
+Console_app is executed, which accesses the other files and executes their respective functions.
 
 
-# **Assumptions and interpretation**
+## Assumptions and interpretation
 
 We analyzed the user stories and tried to implement them. We considered what we need to keep in mind, what needs to be changed or adapted, and what we can implement directly. We started a GitHub project and roughly outlined who is "serving" which user stories.
 
