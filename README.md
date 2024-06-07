@@ -39,6 +39,7 @@ other tasks:
 writing the documentation
 
 
+<br  />
 
 
 ### Aurelius
@@ -60,6 +61,7 @@ other tasks:
 creating the GitHub repository, assigning the user stories
 
 
+<br  />
 
 
 ### Teveen
@@ -107,6 +109,7 @@ other tasks:
 creating PyCharm environment
 
 
+<br  />
 
 
 ## Instruction and Step-by-step guide
