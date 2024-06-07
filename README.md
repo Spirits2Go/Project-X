@@ -106,10 +106,138 @@ creating PyCharm environment
 
 ## Instruction
 
-### Step-by-step instructions on how to use our application:
+### Overview
 
-1. Console_app is executed, which accesses the other files and executes their respective functions.
-2. 
+The Booking Management Application is designed to facilitate hotel searches, reservations, and administrative management in a user-friendly Python environment. The application supports different user roles, each with specific functionalities tailored to their needs.
+
+
+### Here is our Step-by-step Instructions on How to Use the Application:
+
+### 1. Run the Application:
+
+- Execute the console.app file. This file initializes and runs the main application, accessing other necessary files and executing their respective functions.
+  
+- It is important to run the application from its intended directory to avoid issues with relative file paths.
+
+  
+### 2. Main Menu Options:
+   
+Upon running the application, you will be presented with the Main Menu, offering the following options:
+
+  1. #### Search Hotels:
+   Opens the search menu where you can search for hotels based on various criteria.
+   
+  2. #### Book a Room:
+   Access the reservation menu to create, update, or delete room bookings.
+   
+  3. #### Admin Management:
+   Access administrative functions (available only to logged-in administrators).
+   
+  4. #### Create User:
+   Create a new user account with specified roles.
+   
+  5. #### Log In/Out:
+   Log in to access personalized and administrative features, or log out.
+   
+  6. #### Quit:
+   Exit the application.
+
+   
+Guest User Functionalities
+
+### 3. Search Hotels:
+Implementation Justification: This functionality allows guest users to find hotels that match their preferences, addressing multiple user stories related to searching by location, star rating, number of guests, and availability.
+Steps:
+By Name: Search hotels by their name.
+User Story Reference: 1.1.1
+By Location: Search hotels based on their location.
+User Story Reference: 1.1.1
+Availability by Date: Search for available rooms by specifying check-in and check-out dates.
+Be sure to enter dates in the correct format (YYYY-MM-DD) and ensure that the check-out date is after the check-in date to avoid errors.
+User Story Reference: 1.1.4
+By Number of Guests: Search for rooms based on the number of guests.
+User Story Reference: 1.1.3
+By Rating (Stars): Search for hotels based on their star rating.
+User Story Reference: 1.1.2
+By Price: Search for hotels based on room price.
+User Story Reference: 1.1.6
+Back to Main Menu: Return to the Main Menu.
+View Hotel Details:
+Implementation Justification: Users need to see detailed information about the hotels and rooms to make an informed decision. This includes room types, maximum guests, description, price, and amenities.
+Steps:
+Select a hotel to view details.
+See available room types, descriptions, and prices.
+User Story Reference: 1.2.1, 1.2.2
+Book a Room:
+Implementation Justification: Booking functionality allows users to make reservations for rooms. The application ensures that the booking process is straightforward and requires minimal user information for privacy.
+Steps:
+Enter hotel and room details.
+Specify booking dates and number of guests.
+Make sure the dates are entered correctly and follow the format (YYYY-MM-DD) to avoid errors.
+Confirm and save the booking.
+User Story Reference: 1.3, 1.4
+Receive Booking Details:
+Implementation Justification: Users can export their booking details to a file for future reference, ensuring they have a record of their reservations.
+Steps:
+After booking, choose to export details.
+Save the booking information to a text file.
+It is important to include timestamps in the exported file names or choose unique file names to avoid overwriting previous files.
+User Story Reference: 1.5
+Create an Account:
+Implementation Justification: Registration functionality allows users to create an account, enabling them to manage bookings and access additional features.
+Steps:
+Enter email and password to create an account.
+User Story Reference: 1.6
+Registered User Functionalities
+Log In:
+Implementation Justification: Logging in allows users to access personalized features such as viewing and managing their bookings.
+Steps:
+Enter username and password.
+It is important to regularly update your passwords and use strong, unique passwords for each account to enhance security.
+User Story Reference: 2.1
+Manage Bookings:
+Implementation Justification: Users can view, update, and delete their bookings, providing flexibility in managing their reservations.
+Steps:
+View booking history.
+Update or delete existing bookings.
+Be cautious when updating or deleting bookings to avoid accidental data loss.
+User Story Reference: 2.1.1
+Admin User Functionalities
+Admin Management:
+Implementation Justification: Admin functionalities are essential for managing hotel information, room details, and bookings, ensuring the system remains up-to-date and accurate.
+Steps:
+Add New Hotel: Add a new hotel with details like name, stars, address, and rooms.
+User Story Reference: 3.1.1
+List All Hotels with Details: View a list of all hotels along with their room details and bookings.
+User Story Reference: 3.2
+Find Hotel by Name: Search for a specific hotel by name.
+User Story Reference: 3.1
+Update Hotel Information: Update the details of an existing hotel.
+User Story Reference: 3.1.3
+Update Room Information: Update the details of rooms in a hotel.
+User Story Reference: 3.1
+Edit Bookings: View and edit existing bookings.
+Be sure to implement additional confirmation prompts and logging for critical admin actions to avoid accidental data loss.
+User Story Reference: 3.3
+Back to Main Menu: Return to the Main Menu.
+Additional Information
+Database Setup:
+The application uses a SQLite database located at ../data/database.db.
+If the database file does not exist, it will be initialized with example data.
+Ensure you have a backup of the database if it contains important data before running the application to prevent accidental data loss.
+Implementation Justification: Using SQLite ensures a lightweight, self-contained database that's easy to set up and manage.
+User Story Reference: Implicit support for all functionalities through data persistence.
+Logging In and Out:
+Users must log in to access reservation and administrative functions.
+Use the provided username and password to log in. Admin users will have access to additional features in the Admin Menu.
+Implementation Justification: User authentication is crucial for personalized experiences and restricting access to sensitive administrative functions.
+User Story Reference: 2.1
+Clearing the Console:
+The application clears the console screen at various points to maintain a clean interface. This is handled by the clear method which uses os.system('cls' if os.name == 'nt' else 'clear').
+Be sure to test the application in the intended environment to ensure the clear screen functionality works as expected.
+Implementation Justification: A clean and clear console interface improves user experience by reducing clutter.
+User Story Reference: General usability enhancement.
+By following these steps and understanding the reasons behind each feature, as well as being aware of potential issues and following the provided tips, users should be able to navigate and utilize the main functionalities of the application efficiently and safely. If there are any issues or further details needed, please refer to the specific sections of the provided code or reach out for support.
 
 
 ## Assumptions and interpretation
