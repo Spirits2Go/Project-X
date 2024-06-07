@@ -125,9 +125,9 @@ The Booking Management Application is designed to facilitate hotel searches, res
 
 ### 1. Run the Application:
 
-- Execute the console.app file. This file initializes and runs the main application, accessing other necessary files and executing their respective functions.
+ - Execute the console.app file. This file initializes and runs the main application, accessing other necessary files and executing their respective functions.
   
-- It is important to run the application from its intended directory to avoid issues with relative file paths.
+ - It is important to run the application from its intended directory to avoid issues with relative file paths.
 
   
 ### 2. Main Menu Options:
