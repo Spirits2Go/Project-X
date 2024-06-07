@@ -18,6 +18,7 @@ register on GitHub
 
 
 
+
 ### Helin
 
 role:  the bee "managing time"
@@ -37,6 +38,7 @@ user stories:
 other tasks: 
 
 writing the documentation
+
 
 
 
@@ -60,6 +62,7 @@ creating the GitHub repository, assigning the user stories
 
 
 
+
 ### Teveen
 
 role:  the dolphin "comunicates with the outside world"
@@ -79,6 +82,7 @@ user stories:
 other tasks:  
 
 creating repository
+
 
 
 
@@ -107,7 +111,6 @@ creating PyCharm environment
 
 ## Instruction and Step-by-step guide
 
-### Overview
 
 The Booking Management Application is designed to facilitate hotel searches, reservations, and administrative management in a user-friendly Python environment. The application supports different user roles, each with specific functionalities tailored to their needs.
 
