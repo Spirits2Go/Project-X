@@ -80,7 +80,10 @@ user stories:
 
 other tasks:  
 
-creating repository <br  />
+creating repository
+
+
+<br  />
 
 
 
