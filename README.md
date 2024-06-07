@@ -163,7 +163,7 @@ This functionality allows guest users to find hotels that match their preference
 
       3. Availability by Date:
       Search for available rooms by specifying check-in and check-out dates.
-      Be sure to enter dates in the correct format (YYYY-MM-DD) and ensure that the check-out date is    after the check-in date to avoid errors.
+      Be sure to enter dates in the correct format (YYYY-MM-DD) and ensure that the check-out date is after the check-in date to avoid errors.
       User Story Reference: 1.1.4
 
       4. By Number of Guests:
@@ -190,6 +190,7 @@ Users need to see detailed information about the hotels and rooms to make an inf
 #### - Steps:
 
       1. Select a hotel to view details.
+      
       2. See available room types, descriptions, and prices.
       
       User Story Reference: 1.2.1, 1.2.2
@@ -203,8 +204,11 @@ Booking functionality allows users to make reservations for rooms. The applicati
 #### - Steps:
 
     1. Enter hotel and room details.
+    
     2. Specify booking dates and number of guests.
+    
     Make sure the dates are entered correctly and follow the format (YYYY-MM-DD) to avoid errors.
+    
     3. Confirm and save the booking.
     
     User Story Reference: 1.3, 1.4
@@ -218,6 +222,7 @@ Users can export their booking details to a file for future reference, ensuring 
 #### - Steps:
 
     1. After booking, choose to export details.
+    
     2. Save the booking information to a text file.
     
     It is important to include timestamps in the exported file names or choose unique file names to avoid overwriting previous files.
@@ -231,6 +236,7 @@ Users can export their booking details to a file for future reference, ensuring 
 Registration functionality allows users to create an account, enabling them to manage bookings and access additional features.
 
 #### - Steps:
+
     1. Enter email and password to create an account.
     
     User Story Reference: 1.6
@@ -260,6 +266,7 @@ Users can view, update, and delete their bookings, providing flexibility in mana
 #### - Steps:
 
     1. View booking history.
+    
     2. Update or delete existing bookings.
     
     Be cautious when updating or deleting bookings to avoid accidental data loss.
@@ -275,24 +282,32 @@ Users can view, update, and delete their bookings, providing flexibility in mana
 Admin functionalities are essential for managing hotel information, room details, and bookings, ensuring the system remains up-to-date and accurate.
 
 #### - Steps:
+
     1. Add New Hotel: 
     Add a new hotel with details like name, stars, address, and rooms.
     User Story Reference: 3.1.1
+    
     2. List All Hotels with Details: 
     View a list of all hotels along with their room details and bookings.
     User Story Reference: 3.2
+    
     3. Find Hotel by Name: 
     Search for a specific hotel by name.
     User Story Reference: 3.1
+    
     4. Update Hotel Information: 
     Update the details of an existing hotel.
     User Story Reference: 3.1.3
+    
     5. Update Room Information: 
     Update the details of rooms in a hotel.
     User Story Reference: 3.1
+    
     6. Edit Bookings: 
-    View and edit existing bookings. Be sure to implement additional confirmation prompts and logging for critical admin actions to avoid accidental data loss.
+    View and edit existing bookings. 
+    Be sure to implement additional confirmation prompts and logging for critical admin actions to avoid accidental data loss.
     User Story Reference: 3.3
+    
     7. Back to Main Menu: 
     Return to the Main Menu.
 
