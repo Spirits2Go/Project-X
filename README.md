@@ -19,7 +19,8 @@ register on GitHub
 
 
 
-### Helin
+
+#### Helin
 
 role:  the bee "managing time"
 
@@ -42,7 +43,8 @@ writing the documentation
 
 
 
-### Aurelius
+
+#### Aurelius
 
 role:  the wolve "keeping the pack together"
 
@@ -63,7 +65,8 @@ creating the GitHub repository, assigning the user stories
 
 
 
-### Teveen
+
+#### Teveen
 
 role:  the dolphin "comunicates with the outside world"
 
@@ -86,7 +89,8 @@ creating repository
 
 
 
-### Jason
+
+#### Jason
 
 role:  the octopus "solving problems"
 
