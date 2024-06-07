@@ -17,6 +17,8 @@ register on GitHub
 1.2. Als Gastnutzer möchte ich Details zu verschiedenen Zimmertypen (EZ, DZ, Familienzimmer), die in einem Hotel verfügbar sind, sehen, einschließlich der maximalen Anzahl von Gästen für dieses Zimmer, Beschreibung, Preis und Ausstattung, um eine fundierte Entscheidung zu treffen.
 
 
+<br  />
+
 
 ### Helin
 
@@ -117,6 +119,7 @@ creating PyCharm environment
 
 The Booking Management Application is designed to facilitate hotel searches, reservations, and administrative management in a user-friendly Python environment. The application supports different user roles, each with specific functionalities tailored to their needs.
 
+<br  />
 
 ### Here is our Step-by-step Instructions on How to Use the Application:
 
