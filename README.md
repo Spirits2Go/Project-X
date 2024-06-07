@@ -8,7 +8,7 @@ Koyuncu Helin, Messmer Aurelius, Shanmuganathan Teveen, Jason Jimenez
 
 ## Overview
 
-### joint tasks:  
+### Joint tasks:  
 
 register on GitHub
 
@@ -105,7 +105,7 @@ creating PyCharm environment
 
 
 
-## Instruction
+## Instruction and Step-by-step guide
 
 ### Overview
 
