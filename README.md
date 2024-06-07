@@ -125,33 +125,33 @@ The Booking Management Application is designed to facilitate hotel searches, res
    
 Upon running the application, you will be presented with the Main Menu, offering the following options:
 
-  #### 1.  Search Hotels:
-   Opens the search menu where you can search for hotels based on various criteria.
+    #### 1.  Search Hotels:
+     Opens the search menu where you can search for hotels based on various criteria.
    
-  #### 2. Book a Room:
-   Access the reservation menu to create, update, or delete room bookings.
+    #### 2. Book a Room:
+     Access the reservation menu to create, update, or delete room bookings.
    
-  #### 3. Admin Management:
-   Access administrative functions (available only to logged-in administrators).
+    #### 3. Admin Management:
+     Access administrative functions (available only to logged-in administrators).
    
-  #### 4. Create User:
-   Create a new user account with specified roles.
+    #### 4. Create User:
+     Create a new user account with specified roles.
    
-  #### 5. Log In/Out:
-   Log in to access personalized and administrative features, or log out.
+    #### 5. Log In/Out:
+     Log in to access personalized and administrative features, or log out.
    
-  #### 6. Quit:
-   Exit the application.
+    #### 6. Quit:
+     Exit the application.
 
    
 ### Guest User Functionalities
 
 ### 3. Search Hotels:
 
-#### - Implementation Justification:
+- Implementation Justification:
 This functionality allows guest users to find hotels that match their preferences, addressing multiple user stories related to searching by location, star rating, number of guests, and availability.
 
-#### - Steps:
+- Steps:
 
   #### 1. By Name: Search hotels by their name.
   User Story Reference: 1.1.1
