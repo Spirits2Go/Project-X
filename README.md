@@ -114,7 +114,7 @@ creating PyCharm environment
 <br  />
 
 
-## Instruction and Step-by-step guide
+## Instruction and step-by-step guide
 
 
 The Booking Management Application is designed to facilitate hotel searches, reservations, and administrative management in a user-friendly Python environment. The application supports different user roles, each with specific functionalities tailored to their needs.
